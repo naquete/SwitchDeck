@@ -1,0 +1,16 @@
+# Binários compilados (gerados na instalação)
+/bin/*
+!/bin/.gitkeep
+
+# Dados do usuário (gerados em tempo de execução)
+/data/profiles/*
+!/data/profiles/.gitkeep
+/data/icons/*
+!/data/icons/.gitkeep
+/data/shortcuts/*
+!/data/shortcuts/.gitkeep
+
+# Windows
+Thumbs.db
+desktop.ini
+*.lnk
