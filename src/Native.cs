@@ -46,6 +46,17 @@ namespace SwitchDeck {
       }
       return list.ToArray();
     }
+    // true se o endpoint (render ou capture) estiver ATIVO agora
+    public static bool IsActive(string id) {
+      var e = (IMMDeviceEnumerator)(new MMDeviceEnumerator());
+      for (int flow = 0; flow < 2; flow++) {
+        IMMDeviceCollection col; e.EnumAudioEndpoints(flow, 1, out col);
+        int n; col.GetCount(out n);
+        for (int i = 0; i < n; i++) { IMMDevice d; col.Item(i, out d); string did; d.GetId(out did);
+          if (string.Equals(did, id, StringComparison.OrdinalIgnoreCase)) return true; }
+      }
+      return false;
+    }
     public static void SetDefault(string id) {
       var pc = (IPolicyConfig)(new CPolicyConfigClient());
       pc.SetDefaultEndpoint(id, 0); pc.SetDefaultEndpoint(id, 1); pc.SetDefaultEndpoint(id, 2);

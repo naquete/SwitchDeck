@@ -118,13 +118,13 @@ function Show-SwitchDeckGui {
     }
 
     # ---------- HANDLERS ----------
-    $bSetOut.Add_Click({ $d=_sel $lvOut; if($d){ Set-SDAudioDefault $d.Id; RefreshOut } else { _warn 'Selecione um dispositivo.' } })
-    $lvOut.Add_DoubleClick({ $d=_sel $lvOut; if($d){ Set-SDAudioDefault $d.Id; RefreshOut } })
+    $bSetOut.Add_Click({ $d=_sel $lvOut; if($d){ if(-not (Set-SDAudioDefault $d.Id)){ _warn 'Esse dispositivo não está disponível agora (ligado/conectado?).' }; RefreshOut } else { _warn 'Selecione um dispositivo.' } })
+    $lvOut.Add_DoubleClick({ $d=_sel $lvOut; if($d){ if(-not (Set-SDAudioDefault $d.Id)){ _warn 'Esse dispositivo não está disponível agora (ligado/conectado?).' }; RefreshOut } })
     $bScOut.Add_Click({ $d=_sel $lvOut; if($d){ $n=New-SDAudioShortcut -Device $d -OnDesktop; _warn "Atalho '$n' criado (área de trabalho + pasta Stream Deck)." } else { _warn 'Selecione um dispositivo.' } })
     $bRfOut.Add_Click({ RefreshOut })
 
-    $bSetMic.Add_Click({ $d=_sel $lvMic; if($d){ Set-SDAudioDefault $d.Id; RefreshMic } else { _warn 'Selecione um microfone.' } })
-    $lvMic.Add_DoubleClick({ $d=_sel $lvMic; if($d){ Set-SDAudioDefault $d.Id; RefreshMic } })
+    $bSetMic.Add_Click({ $d=_sel $lvMic; if($d){ if(-not (Set-SDAudioDefault $d.Id)){ _warn 'Esse microfone não está disponível agora (ligado/conectado?).' }; RefreshMic } else { _warn 'Selecione um microfone.' } })
+    $lvMic.Add_DoubleClick({ $d=_sel $lvMic; if($d){ if(-not (Set-SDAudioDefault $d.Id)){ _warn 'Esse microfone não está disponível agora (ligado/conectado?).' }; RefreshMic } })
     $bScMic.Add_Click({ $d=_sel $lvMic; if($d){ $n=New-SDAudioShortcut -Device $d -Mic -OnDesktop; _warn "Atalho '$n' criado." } else { _warn 'Selecione um microfone.' } })
     $bRfMic.Add_Click({ RefreshMic })
 

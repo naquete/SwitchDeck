@@ -37,7 +37,13 @@ Import-SDNative
 # ---------------------------------------------------------------------------
 function Get-SDAudioOutputs { [SwitchDeck.AudioNative]::List(0) }
 function Get-SDMicrophones  { [SwitchDeck.AudioNative]::List(1) }
-function Set-SDAudioDefault { param([string]$Id) [SwitchDeck.AudioNative]::SetDefault($Id) }
+function Test-SDAudioActive { param([string]$Id) [SwitchDeck.AudioNative]::IsActive($Id) }
+# Retorna $true se trocou; $false se o dispositivo nao esta disponivel (desligado/desconectado)
+function Set-SDAudioDefault {
+    param([string]$Id)
+    if (-not [SwitchDeck.AudioNative]::IsActive($Id)) { return $false }
+    try { [SwitchDeck.AudioNative]::SetDefault($Id); return $true } catch { return $false }
+}
 
 # ---------------------------------------------------------------------------
 #  PERFIS DE MONITOR
