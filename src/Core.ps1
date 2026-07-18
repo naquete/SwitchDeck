@@ -44,6 +44,13 @@ function Set-SDAudioDefault {
     if (-not [SwitchDeck.AudioNative]::IsActive($Id)) { return $false }
     try { [SwitchDeck.AudioNative]::SetDefault($Id); return $true } catch { return $false }
 }
+# Troca pelo NOME do dispositivo (estavel; o Id/GUID pode mudar em updates). Retorna $true/$false.
+function Set-SDAudioByName {
+    param([string]$Name)
+    $t = (@(Get-SDAudioOutputs) + @(Get-SDMicrophones)) | Where-Object { $_.Name -eq $Name } | Select-Object -First 1
+    if (-not $t) { return $false }
+    try { [SwitchDeck.AudioNative]::SetDefault($t.Id); return $true } catch { return $false }
+}
 
 # ---------------------------------------------------------------------------
 #  PERFIS DE MONITOR
@@ -72,7 +79,8 @@ function Invoke-SDProfile {
     param([string]$File)
     $r = [SwitchDeck.DisplayNative]::Load($File)
     $json = [IO.Path]::ChangeExtension($File, '.json')
-    if (Test-Path $json) { $m = Get-Content $json -Raw | ConvertFrom-Json; if ($m.AudioId) { Set-SDAudioDefault $m.AudioId } }
+    if (Test-Path $json) { $m = Get-Content $json -Raw | ConvertFrom-Json
+        if ($m.AudioName) { Set-SDAudioByName $m.AudioName | Out-Null } elseif ($m.AudioId) { Set-SDAudioDefault $m.AudioId | Out-Null } }
     return $r
 }
 function Remove-SDProfile {
@@ -154,7 +162,7 @@ function New-SDAudioShortcut {
     $name = ("$prefix - $($Device.Name)") -replace '[\\/:*?"<>|]', '_'
     $icon = Join-Path $IconDir ($name + '.png')
     New-SDIcon -Type $(if($Mic){'mic'}else{'speaker'}) -Top $prefix -Big (Get-SDShortLabel $Device.Name) -OutFile $icon -ColorA $(if($Mic){'#8B5CF6'}else{'#10B981'}) -ColorB $(if($Mic){'#7C3AED'}else{'#059669'}) | Out-Null
-    New-SDShortcut -Name $name -Arguments "-Do audio -Id `"$($Device.Id)`"" -IconPath $icon -OnDesktop:$OnDesktop | Out-Null
+    New-SDShortcut -Name $name -Arguments "-Do audio -Name `"$($Device.Name)`"" -IconPath $icon -OnDesktop:$OnDesktop | Out-Null
     return $name
 }
 function New-SDProfileShortcut {

@@ -71,7 +71,7 @@ Add-Type -Path .\src\Native.cs -OutputAssembly .\bin\SwitchDeck.Native.dll
 
 ## 🧠 Como funciona (técnico)
 
-- **Áudio**: enumera os endpoints via `IMMDeviceEnumerator` e define o padrão via a interface (não documentada, mas estável) `IPolicyConfig::SetDefaultEndpoint` para os papéis *Console*, *Multimídia* e *Comunicações*.
+- **Áudio**: enumera os endpoints via `IMMDeviceEnumerator` e define o padrão via a interface (não documentada, mas estável) `IPolicyConfig::SetDefaultEndpoint` para os papéis *Console*, *Multimídia* e *Comunicações*. Os atalhos identificam o dispositivo pelo **nome** (estável), não pelo GUID do endpoint — que pode mudar após updates do Windows/driver. Se o dispositivo não estiver ativo (desligado/desconectado), avisa em vez de dar erro.
 - **Monitores**: usa a **API CCD** moderna (`QueryDisplayConfig` / `SetDisplayConfig`) — a mesma das Configurações do Windows. Um perfil é o retrato binário dos *paths/modes* ativos; ao aplicar, o `adapterId` (LUID) é re-carimbado, pois ele muda a cada reinício.
 - **Sem flash**: `RunHidden.exe` é um app de subsistema *Windows* (sem console) que inicia o PowerShell invisível.
 - Os componentes nativos ficam num único `src\Native.cs`, compilado para `bin\SwitchDeck.Native.dll` na primeira execução (carregamento rápido depois).
