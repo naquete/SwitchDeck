@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace SwitchDeck {
 
-  public class AudioDevice { public string Id; public string Name; public bool IsDefault; }
+  public class AudioDevice { public string Id; public string Name; public bool IsDefault; public bool IsComm; }
 
   [ComImport, Guid("BCDE0395-E52F-467C-8E3D-C4579291692E")] class MMDeviceEnumerator { }
   [Guid("A95664D2-9614-4F35-A746-DE8DB63617E6"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -35,14 +35,15 @@ namespace SwitchDeck {
     // dataFlow: 0 = render (saída), 1 = capture (microfone)
     public static AudioDevice[] List(int dataFlow) {
       var e = (IMMDeviceEnumerator)(new MMDeviceEnumerator());
-      string defId = ""; IMMDevice dd;
+      string defId = ""; string commId = ""; IMMDevice dd;
       if (e.GetDefaultAudioEndpoint(dataFlow, 0, out dd) == 0) dd.GetId(out defId);
+      if (e.GetDefaultAudioEndpoint(dataFlow, 2, out dd) == 0) dd.GetId(out commId);
       IMMDeviceCollection col; e.EnumAudioEndpoints(dataFlow, 1, out col); // 1 = DEVICE_STATE_ACTIVE
       int n; col.GetCount(out n);
       var list = new List<AudioDevice>();
       for (int i = 0; i < n; i++) {
         IMMDevice d; col.Item(i, out d); string id; d.GetId(out id);
-        list.Add(new AudioDevice { Id = id, Name = NameOf(d), IsDefault = (id == defId) });
+        list.Add(new AudioDevice { Id = id, Name = NameOf(d), IsDefault = (id == defId), IsComm = (id == commId) });
       }
       return list.ToArray();
     }
@@ -60,6 +61,19 @@ namespace SwitchDeck {
     public static void SetDefault(string id) {
       var pc = (IPolicyConfig)(new CPolicyConfigClient());
       pc.SetDefaultEndpoint(id, 0); pc.SetDefaultEndpoint(id, 1); pc.SetDefaultEndpoint(id, 2);
+    }
+    // def = dispositivo padrao (console + multimidia); comm = dispositivo de comunicacao
+    public static void SetRoles(string id, bool def, bool comm) {
+      var pc = (IPolicyConfig)(new CPolicyConfigClient());
+      if (def) { pc.SetDefaultEndpoint(id, 0); pc.SetDefaultEndpoint(id, 1); }
+      if (comm) { pc.SetDefaultEndpoint(id, 2); }
+    }
+    // role: 0 = padrao, 2 = comunicacao. Devolve "" se nao houver.
+    public static string DefaultName(int dataFlow, int role) {
+      var e = (IMMDeviceEnumerator)(new MMDeviceEnumerator());
+      IMMDevice dd;
+      if (e.GetDefaultAudioEndpoint(dataFlow, role, out dd) != 0 || dd == null) return "";
+      return NameOf(dd) ?? "";
     }
   }
 
@@ -127,17 +141,36 @@ namespace SwitchDeck {
       return SetDisplayConfig((uint)paths.Length, paths, (uint)modes.Length, modes,
         SDC_APPLY | SDC_USE_SUPPLIED | SDC_SAVE_DB | SDC_ALLOW_CHANGES);
     }
-    public static string Describe(string file) {
+    static void ReadFile(string file, out PATH_INFO[] paths, out MODE_INFO[] modes) {
       byte[] all = File.ReadAllBytes(file);
       int nP = BitConverter.ToInt32(all,0); int nM = BitConverter.ToInt32(all,4);
       int pSz = Marshal.SizeOf(typeof(PATH_INFO));
-      var paths = FromBytes<PATH_INFO>(all, 8, nP);
-      var modes = FromBytes<MODE_INFO>(all, 8 + nP*pSz, nM);
-      string s = nP + " tela(s): ";
+      paths = FromBytes<PATH_INFO>(all, 8, nP);
+      modes = FromBytes<MODE_INFO>(all, 8 + nP*pSz, nM);
+    }
+    static string Text(PATH_INFO[] paths, MODE_INFO[] modes) {
+      var parts = new List<string>();
       for (int i=0;i<paths.Length;i++){ var idx = paths[i].src.modeInfoIdx;
         if (idx < modes.Length) { var sm = modes[idx].mode.sourceMode;
-          s += sm.width + "x" + sm.height + (sm.position.x==0 && sm.position.y==0 ? "(principal) " : " "); } }
-      return s.Trim();
+          parts.Add(sm.width + "x" + sm.height + (sm.position.x==0 && sm.position.y==0 ? " (principal)" : "")); } }
+      return paths.Length + (paths.Length == 1 ? " tela: " : " telas: ") + string.Join(", ", parts.ToArray());
+    }
+    // Assinatura do arranjo: qual saida de video, em que resolucao e posicao. Ignora o adaptador (muda a cada boot).
+    static string Signature(PATH_INFO[] paths, MODE_INFO[] modes) {
+      var parts = new List<string>();
+      for (int i=0;i<paths.Length;i++){ var idx = paths[i].src.modeInfoIdx; string m = "?";
+        if (idx < modes.Length) { var sm = modes[idx].mode.sourceMode; m = sm.width + "x" + sm.height + "@" + sm.position.x + "," + sm.position.y; }
+        parts.Add(paths[i].tgt.id + ":" + m); }
+      parts.Sort(StringComparer.Ordinal);
+      return string.Join("|", parts.ToArray());
+    }
+    public static string Describe(string file) { PATH_INFO[] p; MODE_INFO[] m; ReadFile(file, out p, out m); return Text(p, m); }
+    public static string DescribeCurrent() { PATH_INFO[] p; MODE_INFO[] m; QueryActive(out p, out m); return Text(p, m); }
+    public static int CountOf(string file) { PATH_INFO[] p; MODE_INFO[] m; ReadFile(file, out p, out m); return p.Length; }
+    public static bool Matches(string file) {
+      PATH_INFO[] p; MODE_INFO[] m; ReadFile(file, out p, out m);
+      PATH_INFO[] cp; MODE_INFO[] cm; QueryActive(out cp, out cm);
+      return Signature(p, m) == Signature(cp, cm);
     }
     public static int ActiveCount() { PATH_INFO[] p; MODE_INFO[] m; QueryActive(out p, out m); return p.Length; }
   }

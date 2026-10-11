@@ -9,6 +9,9 @@
 !/data/icons/.gitkeep
 /data/shortcuts/*
 !/data/shortcuts/.gitkeep
+/data/config.json
+/data/ulanzi.json
+/data/backups/
 
 # Windows
 Thumbs.db

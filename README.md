@@ -4,9 +4,9 @@
 
 # SwitchDeck
 
-**Troque a saída de áudio, o microfone e a configuração dos monitores com um clique — ou por um botão do seu Stream Deck.**
+**Som, voz, microfone e telas em um clique. Monte seus botões num painel e leve para a área de trabalho ou para o seu Stream Deck.**
 
-*Switch audio output, microphone and monitor layout with one click — or from a Stream Deck button.*
+*One button switches audio output, voice device, microphone and monitor layout. Build your buttons in a panel and take them to the desktop or to your Stream Deck.*
 
 ![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D6)
 ![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE)
@@ -16,91 +16,110 @@
 
 ---
 
+![Painel do SwitchDeck](docs/tela-principal.png)
+
 ## O que faz
 
-- **Saída de áudio** — troca o dispositivo padrão (define **áudio** *e* **comunicações** de uma vez).
-- **Microfone** — troca o microfone padrão do mesmo jeito.
-- **Perfis de monitor** — salva configurações completas de tela (quais monitores ligados, qual é o principal, posições, resolução) e reaplica com um clique. Ótimo para alternar entre "TV para jogar", "trabalho com 3 telas", etc.
-- **Áudio vinculado ao perfil** — um perfil de monitor pode, opcionalmente, já trocar o áudio junto.
-- **Atalhos + Stream Deck** — cria atalhos na área de trabalho **e** numa pasta pronta para o Stream Deck, com **ícones PNG** gerados automaticamente.
-- **Sem flash de terminal** — as ações rodam por um lançador invisível; nenhuma janela preta pisca.
+Trocar de headset para caixas de som, do microfone do headset para o de mesa, ou do monitor para a TV costuma ser uma sequência de cliques nas configurações do Windows. O SwitchDeck transforma cada combinação num **botão**.
+
+Um botão pode fazer, de uma vez, qualquer mistura de:
+
+- **Som**: o aparelho de saída padrão.
+- **Voz**: o aparelho usado em chamadas e no Discord. Pode ser o mesmo do som ou outro (por exemplo, o canal de chat de um mixer).
+- **Microfone**: o microfone padrão.
+- **Telas**: um arranjo de monitores guardado (quais estão ligados, qual é o principal, posição e resolução).
+
+Cada botão ganha uma **tecla** desenhada automaticamente, com nome, símbolo e cor. O painel mostra o que está em uso agora no Windows e destaca a tecla correspondente.
 
 ## Requisitos
 
 - **Windows 10 ou 11**
-- Nada para instalar — usa apenas o **Windows PowerShell** e o **.NET Framework** que já vêm no Windows.
+- Nada para instalar: usa apenas o **Windows PowerShell** e o **.NET Framework** que já vêm no Windows.
 
 ## Instalação
 
-1. Baixe o projeto (**Code → Download ZIP**) e **extraia** numa pasta com permissão de escrita (ex.: `Documentos\SwitchDeck`).
-2. Dê dois cliques em **`Instalar.cmd`**.
-   - Ele desbloqueia os arquivos, compila os componentes nativos e cria um atalho **SwitchDeck** na Área de Trabalho.
+1. Baixe o projeto (**Code → Download ZIP**) e **extraia** numa pasta com permissão de escrita e, de preferência, sem espaços no caminho (ex.: `C:\SwitchDeck`).
+2. Dê dois cliques em **`Instalar.cmd`**. Ele desbloqueia os arquivos, compila os componentes nativos e cria um atalho **SwitchDeck** na Área de Trabalho.
 3. Abra o app pelo atalho **SwitchDeck**.
 
-> Na primeira execução o Windows pode pedir confirmação (SmartScreen) por ser um app novo — é seguro, o código é aberto.
+> Na primeira execução o Windows pode pedir confirmação (SmartScreen) por ser um app novo. O código é aberto e está todo nesta página.
 
 ## Como usar
 
-Abra o **SwitchDeck** e use as três abas:
+### Criar um botão
 
-| Aba | O que fazer |
-|-----|-------------|
-| **Saída de Áudio** | Selecione um dispositivo → **Definir como padrão** (ou dê duplo-clique). **Criar atalho** gera o atalho + ícone. |
-| **Microfone** | Igual, para os microfones. |
-| **Monitores** | Arrume as telas nas *Configurações do Windows*, depois **Capturar tela atual** para salvar um perfil. **Aplicar** reproduz o perfil. **Criar atalho** para acioná-lo direto. |
+Clique em **Novo botão**. No painel que abre, ligue só o que o botão deve mudar e escolha o aparelho em cada linha. O nome, o rótulo, o símbolo e a cor são sugeridos sozinhos e a prévia da tecla muda na hora; ajuste se quiser. **Testar agora** aplica sem salvar.
 
-### Usando no Stream Deck
+![Editor de botão](docs/editor.png)
 
-Todo atalho criado também vai para a pasta **`data\shortcuts`** (o botão *Abrir pasta de atalhos* te leva lá). No software do seu Stream Deck:
+Para guardar um arranjo de telas, arrume os monitores nas *Configurações do Windows* do jeito que você quer e clique em **Guardar o arranjo de agora**.
 
-1. Ação **Abrir / Executar programa** apontando para o `.lnk` da pasta.
-2. Defina a imagem do botão usando o **PNG** correspondente em `data\icons`.
+No primeiro uso, **Criar um botão para cada aparelho de som** monta o básico em um clique.
+
+### Usar
+
+Clique na tecla. Um aviso mostra o que foi trocado. Se um aparelho estiver desligado, o SwitchDeck avisa qual é e troca o resto.
+
+Passe o mouse sobre a tecla para **Editar**; o menu **···** (ou o botão direito) tem criar atalho, copiar comando, mover e excluir.
+
+### Levar para fora do painel
+
+![Levar para fora](docs/levar-para-fora.png)
+
+- **Atalhos na área de trabalho**: um por botão, com o ícone da tecla. Rodam sem abrir janela.
+- **Qualquer Stream Deck**: exporte os ícones em PNG e, no programa do seu deck, crie uma ação de *abrir programa* colando o comando do botão (menu da tecla, **Copiar comando**).
+- **Ulanzi D200** (experimental): **Enviar para o deck** cria no perfil em uso uma pasta *SwitchDeck* com uma tecla para cada botão, já com ícone e comando. O programa da Ulanzi é fechado e reaberto, e uma cópia do perfil é guardada antes em `data\backups`. Cabem 12 botões na pasta.
 
 ## Código aberto e reproduzível
 
-Tudo aqui é **código-fonte legível** — nenhum binário "caixa-preta" baixado de lugar nenhum. Os únicos executáveis (`bin\RunHidden.exe` e `bin\SwitchDeck.Native.dll`) são **compilados na sua máquina** a partir de `src\RunHidden.cs` e `src\Native.cs` na primeira execução (ou ao rodar `Instalar.cmd`). Você pode ler, auditar e modificar cada linha.
+Tudo aqui é **código-fonte legível**. Os únicos executáveis (`bin\RunHidden.exe` e `bin\SwitchDeck.Native.*.dll`) são **compilados na sua máquina** a partir de `src\RunHidden.cs` e `src\Native.cs` na primeira execução ou ao rodar `Instalar.cmd`. Nada é baixado.
 
-Compilar manualmente, se quiser (opcional):
+Para ver o painel sem tocar nos seus aparelhos:
 
 ```powershell
-# Lançador sem janela
-Add-Type -Path .\src\RunHidden.cs -OutputAssembly .\bin\RunHidden.exe -OutputType WindowsApplication
-# Componentes nativos (áudio + monitores)
-Add-Type -Path .\src\Native.cs -OutputAssembly .\bin\SwitchDeck.Native.dll
+powershell -NoProfile -ExecutionPolicy Bypass -Sta -File .\SwitchDeck.ps1 -Demo
 ```
 
 ## Como funciona (técnico)
 
-- **Áudio**: enumera os endpoints via `IMMDeviceEnumerator` e define o padrão via a interface (não documentada, mas estável) `IPolicyConfig::SetDefaultEndpoint` para os papéis *Console*, *Multimídia* e *Comunicações*. Os atalhos identificam o dispositivo pelo **nome** (estável), não pelo GUID do endpoint — que pode mudar após updates do Windows/driver. Se o dispositivo não estiver ativo (desligado/desconectado), avisa em vez de dar erro.
-- **Monitores**: usa a **API CCD** moderna (`QueryDisplayConfig` / `SetDisplayConfig`) — a mesma das Configurações do Windows. Um perfil é o retrato binário dos *paths/modes* ativos; ao aplicar, o `adapterId` (LUID) é re-carimbado, pois ele muda a cada reinício.
-- **Sem flash**: `RunHidden.exe` é um app de subsistema *Windows* (sem console) que inicia o PowerShell invisível.
-- Os componentes nativos ficam num único `src\Native.cs`, compilado para `bin\SwitchDeck.Native.dll` na primeira execução (carregamento rápido depois).
+- **Áudio**: enumera os aparelhos via `IMMDeviceEnumerator` e define o padrão via `IPolicyConfig::SetDefaultEndpoint`, separando os papéis *padrão* (Console e Multimídia) e *comunicação*. Os botões guardam o **nome** do aparelho, nunca o identificador, que muda depois de atualização do Windows ou quando um dongle troca de porta. A comparação ignora o prefixo `2- ` que o Windows acrescenta nesses casos.
+- **Telas**: usa a **API CCD** (`QueryDisplayConfig` / `SetDisplayConfig`), a mesma das Configurações do Windows. Um arranjo é o retrato binário dos *paths* e *modes* ativos; ao aplicar, o `adapterId` é carimbado de novo, porque muda a cada reinício. Quando o botão troca telas e som, as telas vão primeiro: a saída de som de uma TV só aparece depois que ela liga.
+- **Teclas**: desenhadas com GDI+ em vetor, em qualquer tamanho (256 px no painel, 196 px para o Ulanzi D200), sem fonte de ícones.
+- **Sem janela piscando**: `RunHidden.exe` é um executável sem console que inicia o PowerShell invisível. É ele que os atalhos e o Stream Deck chamam.
+- **Interface**: WPF carregado a partir de XAML, sem instalação.
 
-> **Por que não usar a API antiga?** Em muitos PCs com Windows 11 a API legada (`ChangeDisplaySettingsEx`) e ferramentas que dependem dela **reportam sucesso mas não mudam nada**. Por isso o SwitchDeck usa exclusivamente a API CCD.
+> **Por que não a API antiga de monitores?** Em muitos PCs com Windows 11 a `ChangeDisplaySettingsEx` e as ferramentas que dependem dela informam sucesso e não mudam nada. Por isso o SwitchDeck usa só a API CCD.
 
 ## Estrutura
 
 ```
 SwitchDeck/
-├─ SwitchDeck.ps1      # entrada da interface
-├─ Run.ps1             # executor das ações (chamado pelos atalhos)
-├─ Install.ps1         # instalação
-├─ Instalar.cmd        # instalador (duplo-clique)
-├─ SwitchDeck.cmd      # abre o app direto
+├─ SwitchDeck.ps1        # abre o painel (-Demo para ver sem tocar em nada)
+├─ Run.ps1               # executa um botão (chamado pelos atalhos e pelo deck)
+├─ Install.ps1           # instalação
+├─ Instalar.cmd          # instalador (duplo-clique)
+├─ SwitchDeck.cmd        # abre o app direto
 ├─ src/
-│  ├─ Core.ps1         # áudio, perfis, ícones, atalhos
-│  ├─ Gui.ps1          # interface WinForms
-│  ├─ Native.cs        # código nativo (áudio + CCD)
-│  └─ RunHidden.cs     # lançador sem janela
-├─ bin/                # binários compilados (gerados)
-└─ data/               # perfis, ícones e atalhos (gerados)
+│  ├─ Engine.ps1         # botões, aparelhos, arranjos, atalhos, exportação
+│  ├─ Icons.ps1          # desenho das teclas (PNG e ICO)
+│  ├─ Ulanzi.ps1         # envio para o Ulanzi D200
+│  ├─ Ui.ps1             # comportamento do painel
+│  ├─ ui/                # layout (XAML), tema e textos
+│  ├─ Engine.Demo.ps1    # motor de demonstração
+│  ├─ messages.json      # textos do motor
+│  ├─ Native.cs          # código nativo (áudio + telas)
+│  └─ RunHidden.cs       # lançador sem janela
+├─ bin/                  # binários compilados (gerados)
+└─ data/                 # seus botões, arranjos, ícones e atalhos (gerados)
 ```
 
 ## Limitações conhecidas
 
-- Perfis de monitor assumem **uma única GPU** no re-carimbo do LUID (cobre a maioria dos PCs). Multi-GPU pode exigir recapturar o perfil.
-- Se você trocar de cabo/porta dos monitores, recapture o perfil.
+- Arranjos de tela assumem **uma única placa de vídeo**. Com mais de uma, pode ser preciso guardar o arranjo de novo.
+- Trocou o cabo ou a porta de um monitor? Guarde o arranjo de novo.
+- O envio para o Ulanzi foi feito para o modelo **D200** e escreve direto nos arquivos de perfil do programa da Ulanzi, um formato que não é documentado. Uma atualização do programa pode quebrar esse envio; os atalhos e o comando copiado continuam funcionando.
+- Se o app estiver numa pasta com espaço no nome, as teclas enviadas ao Ulanzi podem não funcionar.
 
 ## Licença
 
-MIT — veja [LICENSE](LICENSE). Use, modifique e compartilhe à vontade.
+MIT. Veja [LICENSE](LICENSE). Use, modifique e compartilhe à vontade.

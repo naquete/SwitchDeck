@@ -1,0 +1,65 @@
+{
+  "glyphs": [
+    { "Id": "headset", "Label": "Headset" },
+    { "Id": "mixer", "Label": "Mixer" },
+    { "Id": "speaker", "Label": "Alto-falante" },
+    { "Id": "speakers", "Label": "Caixas de som" },
+    { "Id": "mic", "Label": "Microfone" },
+    { "Id": "desktopmic", "Label": "Microfone de mesa" },
+    { "Id": "gamingtv", "Label": "TV para jogar" },
+    { "Id": "singletv", "Label": "Uma tela" },
+    { "Id": "dual", "Label": "Duas telas" },
+    { "Id": "triple", "Label": "Três telas" }
+  ],
+  "colors": [
+    { "Id": "#9FADFF", "Label": "Lavanda" },
+    { "Id": "#65DCAE", "Label": "Verde" },
+    { "Id": "#C2A2FF", "Label": "Lilás" },
+    { "Id": "#F6C66E", "Label": "Âmbar" },
+    { "Id": "#88B8FF", "Label": "Azul" },
+    { "Id": "#FF8277", "Label": "Coral" },
+    { "Id": "#71DED0", "Label": "Turquesa" },
+    { "Id": "#BDC9D7", "Label": "Cinza" }
+  ],
+  "top": {
+    "som": "SOM",
+    "mic": "MIC",
+    "micOnly": "MICROFONE",
+    "telas": "TELAS",
+    "folder": "PASTA"
+  },
+  "run": {
+    "output": "Som: {0}",
+    "comm": "Voz: {0}",
+    "commFallback": "Voz: {0} (o aparelho {1} não está ligado agora)",
+    "mic": "Microfone: {0}",
+    "layout": "Telas: {0}",
+    "missingOutput": "O aparelho de som \"{0}\" não está ligado agora.",
+    "missingMic": "O microfone \"{0}\" não está ligado agora.",
+    "missingLayout": "O arranjo de telas \"{0}\" não existe mais.",
+    "layoutFailed": "O Windows recusou o arranjo de telas \"{0}\" (código {1}). Confira se as telas estão ligadas e conectadas.",
+    "failed": "Não consegui trocar para \"{0}\": {1}",
+    "nothing": "Este botão ainda não faz nada. Escolha pelo menos uma ação.",
+    "notFound": "Não encontrei esse botão. Ele pode ter sido excluído.",
+    "noName": "Dê um nome ao botão.",
+    "layoutName": "Dê um nome ao arranjo de telas."
+  },
+  "ulanzi": {
+    "notInstalled": "O programa da Ulanzi não foi encontrado neste computador.",
+    "noDevice": "Nenhum aparelho da Ulanzi foi configurado ainda. Abra o programa da Ulanzi com o aparelho ligado uma vez.",
+    "noProfile": "Não encontrei o perfil em uso no programa da Ulanzi.",
+    "unsupported": "Por enquanto só o modelo D200 é aceito. O seu é {0}.",
+    "ready": "Pronto para enviar.",
+    "noButtons": "Crie pelo menos um botão antes de enviar.",
+    "tooMany": "A pasta do deck comporta 12 botões. Enviei os 12 primeiros; {0} ficaram de fora.",
+    "backup": "Cópia de segurança do perfil guardada em {0}",
+    "page": "Pasta SwitchDeck com {0} botões",
+    "folderAdded": "Tecla da pasta criada na página {0} do deck",
+    "folderKept": "A tecla da pasta já existia e foi mantida",
+    "noSlot": "Não há tecla livre nas páginas principais do deck. A pasta foi criada, mas você precisa abrir espaço e apontar uma tecla de pasta para ela.",
+    "restarted": "Programa da Ulanzi reaberto",
+    "notRestarted": "Abra o programa da Ulanzi para ver a mudança.",
+    "stillRunning": "Não consegui fechar o programa da Ulanzi. Feche-o e tente de novo.",
+    "spaces": "O SwitchDeck está numa pasta com espaço no nome. Se as teclas não funcionarem no deck, mova o app para uma pasta sem espaços."
+  }
+}
